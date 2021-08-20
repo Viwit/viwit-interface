@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://viwit.com/viwitinterface/infraestructure/driven_adapter/soap/ws"
+           targetNamespace="http://viwit.com/viwitinterface/infraestructure/driven_adapter/soap/ws" elementFormDefault="qualified">
+
+    <xs:element name="getBusByLicensePlateRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="LicensePlate" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getBusByLicensePlateResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="bus" type="tns:bus"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getRouteByIdRouteRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="IdRoute" type="xs:integer"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getRouteByIdRouteResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="route" type="tns:route"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addBalanceRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="token" type="xs:string"/>
+                <xs:element name="wallet_id" type="xs:integer"/>
+                <xs:element name="id_method_payment" type="xs:integer"/>
+                <xs:element name="mount" type="xs:integer"/>
+                <xs:element name="type" type="xs:integer"/>
+                <xs:element name="tokenFirebase" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addBalanceResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="data" type="tns:data"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="data">
+        <xs:sequence>
+            <xs:element name="id" type="xs:integer"/>
+            <xs:element name="id_method_payment" type="xs:integer"/>
+            <xs:element name="mount" type="xs:integer"/>
+            <xs:element name="status" type="xs:string"/>
+            <xs:element name="type" type="xs:integer"/>
+            <xs:element name="wallet_id" type="xs:integer"/>
+            <xs:element name="date" type="xs:string"/>
+            <xs:element name="typename" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="route">
+        <xs:sequence>
+            <xs:element name="IdRoute" type="xs:integer"/>
+            <xs:element name="NameRoute" type="xs:string"/>
+            <xs:element name="InitialBusStop" type="xs:integer"/>
+            <xs:element name="FinalBusStop" type="xs:integer"/>
+            <xs:element name="ApproximateDuration" type="xs:integer"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="bus">
+        <xs:sequence>
+            <xs:element name="LicensePlateBus" type="xs:string"/>
+            <xs:element name="Model" type="xs:string"/>
+            <xs:element name="SeatedPassengerCapacity" type="xs:integer"/>
+            <xs:element name="StandingPassengerCapacity" type="xs:integer"/>
+            <xs:element name="debtCollectorIdUser" type="xs:integer"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
