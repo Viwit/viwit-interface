@@ -1,5 +1,6 @@
 package com.viwit.viwitinterface.infraestructure.driven_adapter.soap.endpoints;
 
+import com.viwit.viwitinterface.domain.entities.general_ms.Bus;
 import com.viwit.viwitinterface.domain.entities.general_ms.Route;
 import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.data.wallet_ms.TransactionInput;
 import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.services.general_ms.BusServiceSOAP;
@@ -27,13 +28,27 @@ public class ViwitWsEndpoint {
             @RequestPayload GetBusByLicensePlateRequest getBusByLicensePlateRequest
     ) {
         GetBusByLicensePlateResponse getBusByLicensePlateResponseReturn = new GetBusByLicensePlateResponse();
-        getBusByLicensePlateResponseReturn
-                .setBus(
-                        (new BusServiceSOAP())
-                                .queryBusByLicensePlate(
-                                        getBusByLicensePlateRequest.getLicensePlate()
-                                )
-                );
+        try{
+            getBusByLicensePlateResponseReturn
+                    .setBus(
+                            (new BusServiceSOAP())
+                                    .queryBusByLicensePlate(
+                                            getBusByLicensePlateRequest.getLicensePlate()
+                                    )
+                    );
+        }catch (NullPointerException ex){
+            getBusByLicensePlateResponseReturn.setBus(
+                    Bus.builder()
+                            .mensaje("Error in the data entered")
+                            .build()
+            );
+        }catch (Exception ex){
+            getBusByLicensePlateResponseReturn.setBus(
+                    Bus.builder()
+                            .mensaje("Error: " + ex)
+                            .build()
+            );
+        }
         return getBusByLicensePlateResponseReturn;
     }
 
@@ -43,15 +58,30 @@ public class ViwitWsEndpoint {
     public GetRouteByIdRouteResponse getRouteByIdRoute(
             @RequestPayload GetRouteByIdRouteRequest getRouteByIdRouteRequest
     ) {
+
         GetRouteByIdRouteResponse getRouteByIdRouteResponseReturn = new GetRouteByIdRouteResponse();
-        getRouteByIdRouteResponseReturn.setRoute(
-                (new RouteServiceSOAP())
-                        .getRouteByIdRoute(
-                                getRouteByIdRouteRequest
-                                        .getIdRoute()
-                                        .intValue()
-                        )
-        );
+        try {
+            getRouteByIdRouteResponseReturn.setRoute(
+                    (new RouteServiceSOAP())
+                            .getRouteByIdRoute(
+                                    getRouteByIdRouteRequest
+                                            .getIdRoute()
+                                            .intValue()
+                            )
+            );
+        }catch (NullPointerException ex){
+            getRouteByIdRouteResponseReturn.setRoute(
+                    Route.builder()
+                            .mensaje("Error in the data entered")
+                            .build()
+            );
+        }catch (Exception ex){
+            getRouteByIdRouteResponseReturn.setRoute(
+                    Route.builder()
+                            .mensaje("Error: " + ex)
+                            .build()
+            );
+        }
         return getRouteByIdRouteResponseReturn;
     }
 
@@ -61,22 +91,33 @@ public class ViwitWsEndpoint {
     public AddBalanceResponse addBalance(
             @RequestPayload AddBalanceRequest balanceRequest
     ) {
-        TransactionInput transactionInput = TransactionInput.builder()
-                .token(balanceRequest.getToken())
-                .wallet_id(balanceRequest.getWalletId().intValue())
-                .id_method_payment(balanceRequest.getIdMethodPayment().intValue())
-                .mount(balanceRequest.getMount().intValue())
-                .type(balanceRequest.getType().intValue())
-                .tokenFirebase(balanceRequest.getTokenFirebase())
-                .build();
         AddBalanceResponse addBalanceResponseReturn = new AddBalanceResponse();
-        addBalanceResponseReturn.setData(
-                (new DataUsesCasesSOAP())
-                        .convertDataToDataWs(
-                                (new WalletServiceSOAP())
-                                        .addBalance(transactionInput)
-                        )
-        );
+        try {
+            TransactionInput transactionInput = TransactionInput.builder()
+                    .token(balanceRequest.getToken())
+                    .wallet_id(balanceRequest.getWalletId().intValue())
+                    .id_method_payment(balanceRequest.getIdMethodPayment().intValue())
+                    .mount(balanceRequest.getMount().intValue())
+                    .type(balanceRequest.getType().intValue())
+                    .tokenFirebase(balanceRequest.getTokenFirebase())
+                    .build();
+
+                    addBalanceResponseReturn.setData(
+                            (new DataUsesCasesSOAP())
+                                    .convertDataToDataWs(
+                                            (new WalletServiceSOAP())
+                                                    .addBalance(transactionInput)
+                                    )
+                    );
+        }catch (NullPointerException ex){
+            Data data = new Data();
+            data.setStatus("Error in the data entered");
+            addBalanceResponseReturn.setData(data);
+        }catch (Exception ex){
+            Data data = new Data();
+            data.setStatus("Error: " + ex);
+            addBalanceResponseReturn.setData(data);
+        }
         return addBalanceResponseReturn;
     }
 

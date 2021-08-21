@@ -14,5 +14,6 @@ public class Bus {
     private Integer SeatedPassengerCapacity;
     private Integer StandingPassengerCapacity;
     private Integer debtCollectorIdUser;
+    private String mensaje;
 
 }

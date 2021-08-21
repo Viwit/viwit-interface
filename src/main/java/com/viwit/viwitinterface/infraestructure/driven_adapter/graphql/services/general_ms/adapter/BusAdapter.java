@@ -19,10 +19,20 @@ public class BusAdapter implements BusGateway {
     public Bus queryBusByLicensePlate(String query, String nameQuery) {
         QueryGraphQL queryGraphQL = new QueryGraphQL();
         queryGraphQL.sendQueryIndividualResponse(query, nameQuery);
-        return BusUseCases.builder()
-                .build()
-                .convertLinkedHashMapToBus(
-                        (LinkedHashMap<String, String>) queryGraphQL.sendQueryIndividualResponse(query, nameQuery)
-                );
+        try{
+            return BusUseCases.builder()
+                    .build()
+                    .convertLinkedHashMapToBus(
+                            (LinkedHashMap<String, String>) queryGraphQL.sendQueryIndividualResponse(query, nameQuery)
+                    );
+        }catch (NullPointerException ex){
+            return Bus.builder()
+                    .mensaje("There is no bus with the License plate entered")
+                    .build();
+        }catch (Exception ex){
+            return Bus.builder()
+                    .mensaje("Error: " + ex)
+                    .build();
+        }
     }
 }

@@ -14,5 +14,6 @@ public class Route {
     private String InitialBusStop;
     private String FinalBusStop;
     private String ApproximateDuration;
+    private String mensaje;
 
 }

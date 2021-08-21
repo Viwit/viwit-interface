@@ -3,15 +3,25 @@ package com.viwit.viwitinterface.infraestructure.driven_adapter.graphql.services
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.*;
 
 import com.viwit.viwitinterface.infraestructure.driven_adapter.graphql.GraphQLConfig;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class QueryGraphQL {
 
@@ -28,8 +38,33 @@ public class QueryGraphQL {
     public Object sendQueryIndividualResponse(String query, String nameQuery){
         JSONObject json = new JSONObject();
         json.put("query",query);
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+
+
         try {
+
+            //self-signed certificate
+            SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
+            sslContextBuilder.loadTrustMaterial(new org.apache.http.conn.ssl.TrustSelfSignedStrategy());
+            SSLContext sslContext = sslContextBuilder.build();
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            X509TrustManager tm = new X509TrustManager() {
+
+                public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+                }
+
+                public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+                }
+
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+            };
+            ctx.init(null, new TrustManager[]{tm}, null);
+            SSLSocketFactory ssf = new SSLSocketFactory(ctx,SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            HttpClientBuilder httpClientBuilder = HttpClients.custom().setSSLSocketFactory(ssf);
+            CloseableHttpClient httpClient = httpClientBuilder.build();
+            //self-signed certificate
+
             HttpPost request = new HttpPost(GraphQLConfig.builder().build().getURL_CONNECTION());
             StringEntity params = new StringEntity(json.toString());
             request.addHeader("content-type", "application/json");
