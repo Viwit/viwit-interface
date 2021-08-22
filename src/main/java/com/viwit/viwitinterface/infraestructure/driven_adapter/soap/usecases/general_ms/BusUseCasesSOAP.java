@@ -26,9 +26,19 @@ public class BusUseCasesSOAP {
 
         busWs.setLicensePlateBus(bus.getLicensePlateBus());
         busWs.setModel(bus.getModel());
-        busWs.setSeatedPassengerCapacity(BigInteger.valueOf(bus.getSeatedPassengerCapacity()));
-        busWs.setStandingPassengerCapacity(BigInteger.valueOf(bus.getSeatedPassengerCapacity()));
-        busWs.setDebtCollectorIdUser(BigInteger.valueOf(bus.getDebtCollectorIdUser()));
+        busWs.setSeatedPassengerCapacity(
+                (bus.getSeatedPassengerCapacity() == null)
+                        ? null : BigInteger.valueOf(bus.getSeatedPassengerCapacity())
+        );
+        busWs.setStandingPassengerCapacity(
+                (bus.getSeatedPassengerCapacity() == null)
+                        ? null : BigInteger.valueOf(bus.getSeatedPassengerCapacity())
+        );
+        busWs.setDebtCollectorIdUser(
+                (bus.getDebtCollectorIdUser() == null)
+                        ? null : BigInteger.valueOf(bus.getDebtCollectorIdUser())
+        );
+        busWs.setMensaje(bus.getMensaje());
 
         return busWs;
     }

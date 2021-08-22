@@ -6,6 +6,8 @@ import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.data.wallet_
 import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.services.general_ms.BusServiceSOAP;
 import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.services.general_ms.RouteServiceSOAP;
 import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.services.wallet_ms.WalletServiceSOAP;
+import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.usecases.general_ms.BusUseCasesSOAP;
+import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.usecases.general_ms.RouteUseCasesSOAP;
 import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.usecases.wallet_ms.DataUsesCasesSOAP;
 import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.ws.Data;
 import com.viwit.viwitinterface.infraestructure.driven_adapter.soap.ws.*;
@@ -31,22 +33,32 @@ public class ViwitWsEndpoint {
         try{
             getBusByLicensePlateResponseReturn
                     .setBus(
-                            (new BusServiceSOAP())
-                                    .queryBusByLicensePlate(
-                                            getBusByLicensePlateRequest.getLicensePlate()
+                            (new BusUseCasesSOAP())
+                                    .convertBusToBusWs(
+                                            (new BusServiceSOAP())
+                                                    .queryBusByLicensePlate(
+                                                            getBusByLicensePlateRequest.getLicensePlate()
+                                                    )
                                     )
                     );
         }catch (NullPointerException ex){
             getBusByLicensePlateResponseReturn.setBus(
-                    Bus.builder()
-                            .mensaje("Error in the data entered")
-                            .build()
+                    (new BusUseCasesSOAP())
+                            .convertBusToBusWs(
+                                    Bus.builder()
+                                            .mensaje("Error in the data entered")
+                                            .build()
+                            )
             );
         }catch (Exception ex){
             getBusByLicensePlateResponseReturn.setBus(
-                    Bus.builder()
-                            .mensaje("Error: " + ex)
-                            .build()
+
+                    (new BusUseCasesSOAP())
+                            .convertBusToBusWs(
+                                    Bus.builder()
+                                            .mensaje("Error: " + ex)
+                                            .build()
+                            )
             );
         }
         return getBusByLicensePlateResponseReturn;
@@ -62,24 +74,33 @@ public class ViwitWsEndpoint {
         GetRouteByIdRouteResponse getRouteByIdRouteResponseReturn = new GetRouteByIdRouteResponse();
         try {
             getRouteByIdRouteResponseReturn.setRoute(
-                    (new RouteServiceSOAP())
-                            .getRouteByIdRoute(
-                                    getRouteByIdRouteRequest
-                                            .getIdRoute()
-                                            .intValue()
+                    (new RouteUseCasesSOAP())
+                            .convertRouteToRouteWs(
+                                    (new RouteServiceSOAP())
+                                            .getRouteByIdRoute(
+                                                    getRouteByIdRouteRequest
+                                                            .getIdRoute()
+                                                            .intValue()
+                                            )
                             )
             );
         }catch (NullPointerException ex){
             getRouteByIdRouteResponseReturn.setRoute(
-                    Route.builder()
-                            .mensaje("Error in the data entered")
-                            .build()
+                    (new RouteUseCasesSOAP())
+                            .convertRouteToRouteWs(
+                                    Route.builder()
+                                            .mensaje("Error in the data entered")
+                                            .build()
+                            )
             );
         }catch (Exception ex){
             getRouteByIdRouteResponseReturn.setRoute(
-                    Route.builder()
-                            .mensaje("Error: " + ex)
-                            .build()
+                    (new RouteUseCasesSOAP())
+                            .convertRouteToRouteWs(
+                                    Route.builder()
+                                            .mensaje("Error: " + ex)
+                                            .build()
+                            )
             );
         }
         return getRouteByIdRouteResponseReturn;
